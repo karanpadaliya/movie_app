@@ -8,9 +8,17 @@ class ApiHelper {
 
   static final ApiHelper obj = ApiHelper._MovieName();
 
-  Future<Response> getApiMovieData(String movieName) async {
+  Future<Response> getApiMovieData(String movieName, [String? type, String? year]) async {
     try {
-      Response res = await get(Uri.parse("$baseUrl&s=$movieName"));
+      String url = "$baseUrl&s=$movieName";
+      if (type != null && type.isNotEmpty) {
+        url += "&type=$type";
+      }
+      if (year != null && year.isNotEmpty) {
+        url += "&y=$year";
+      }
+
+      Response res = await get(Uri.parse(url));
       if (res.statusCode == 200) {
         return res;
       } else {
@@ -25,7 +33,7 @@ class ApiHelper {
     try {
       Response response = await get(Uri.parse("$baseUrl&i=$imdbID"));
       if (response.statusCode == 200) {
-       return movieDetailsModelFromJson(response.body);
+        return movieDetailsModelFromJson(response.body);
       } else {
         throw Exception('Failed to load movie data');
       }
