@@ -265,6 +265,36 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
           title: Text('Already Added'),
           content: Text('$movieTitle is already in your favorites.'),
           actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, "FavoritesPage");
+              },
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 50,
+                  ),
+                  Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text('View Favorite'),
+                ],
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(
+                    CupertinoColors.darkBackgroundGray),
+                foregroundColor: MaterialStatePropertyAll(Colors.white),
+                shape: MaterialStatePropertyAll(
+                  ContinuousRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+            ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
