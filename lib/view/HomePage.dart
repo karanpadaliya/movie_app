@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_app/controller/FavoritesProvider.dart';
 import 'package:movie_app/controller/HomeProvider.dart';
+import 'package:movie_app/model/movieDetailsModel.dart';
+import 'package:movie_app/view/MovieDetailsPage.dart';
 import 'package:movie_app/view/SearchMovieList.dart';
+import 'package:movie_app/view/components/HomePage(Favorite).dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,8 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool isSearch = true;
-
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -39,9 +41,7 @@ class _HomePageState extends State<HomePage> {
             ),
             IconButton(
               onPressed: () {
-                Provider.of<HomeProvider>(context, listen: false)
-                    .getIsSearch();
-                print(isSearch);
+                Provider.of<HomeProvider>(context, listen: false).getIsSearch();
               },
               icon: Icon(
                 CupertinoIcons.search,
@@ -53,11 +53,10 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       child: Consumer<HomeProvider>(
-        builder: (BuildContext context, value, Widget? child) {
+        builder: (BuildContext context, homeProvider, Widget? child) {
           return Visibility(
-            visible: value.isSearch,
+            visible: homeProvider.isSearch,
             child: Column(
-              // mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Expanded(
@@ -65,6 +64,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            replacement: Home_FavoritePage(),
           );
         },
       ),

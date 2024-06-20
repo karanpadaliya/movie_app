@@ -41,6 +41,7 @@ class _MainPageState extends State<MainPage> {
           "SearchMovieList": (context) => SearchMovieList(),
           // "MovieDetailsPage": (context) => MovieDetailsPage(),
           "FavoritesPage": (context) => FavoritesPage(),
+          // "Home_FavoritePage": (context) => Home_FavoritePage(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(
