@@ -5,15 +5,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FavoritesProvider extends ChangeNotifier {
   late SharedPreferences prefs;
-  late List<MovieDetailsModel> _favoriteMovies;
+  List<MovieDetailsModel> _favoriteMovies = [];
 
   FavoritesProvider() {
-    loadFavoriteMovies();
+    _initialize();
   }
 
   List<MovieDetailsModel> get favoriteMovies => _favoriteMovies;
 
-  void loadFavoriteMovies() async {
+  Future<void> _initialize() async {
+    await loadFavoriteMovies();
+  }
+
+  Future<void> loadFavoriteMovies() async {
     prefs = await SharedPreferences.getInstance();
     final favoritesString = prefs.getString('favorites');
     if (favoritesString != null) {
@@ -24,12 +28,13 @@ class FavoritesProvider extends ChangeNotifier {
     } else {
       _favoriteMovies = [];
     }
+    notifyListeners();  // Notify listeners to update the UI after loading favorites
   }
 
-  void saveFavoriteMovies() {
+  Future<void> saveFavoriteMovies() async {
     final favoritesString =
     jsonEncode(_favoriteMovies.map((fav) => fav.toJson()).toList());
-    prefs.setString('favorites', favoritesString);
+    await prefs.setString('favorites', favoritesString);
   }
 
   bool isFavorite(MovieDetailsModel movie) {

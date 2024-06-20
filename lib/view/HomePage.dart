@@ -1,11 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:movie_app/controller/ApiHelper.dart';
 import 'package:movie_app/controller/HomeProvider.dart';
-import 'package:movie_app/model/searchModel.dart';
 import 'package:movie_app/view/SearchMovieList.dart';
 import 'package:provider/provider.dart';
 
