@@ -82,6 +82,8 @@
       │   ├── home_page.dart
       │   ├── detail_page.dart
       │   ├── liked_movies_page.dart
+      │   ├── components/
+      │   │   ├── HomePage(Favorite).dart
       ├── main.dart
     </code>
   </pre>
@@ -104,7 +106,24 @@
     <li>carousel_slider for carousel slider UI</li>
     <li>url_launcher for launching URLs</li>
     <li>share_plus for sharing movie details</li>
+    <li>path_provider for accessing temporary directory</li>
   </ul>
+
+  <h2>Dependencies</h2>
+
+  <pre>
+    <code>
+      dependencies:
+        cupertino_icons: ^1.0.2
+        provider: ^6.1.2
+        http: ^1.2.0
+        url_launcher: ^6.3.0
+        shared_preferences: ^2.2.3
+        carousel_slider: ^4.2.1
+        share_plus: ^7.2.2
+        path_provider: ^2.1.3
+    </code>
+  </pre>
 
   <h2>License</h2>
 
