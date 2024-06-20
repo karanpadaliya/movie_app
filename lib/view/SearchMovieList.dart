@@ -22,7 +22,7 @@ class _SearchMovieListState extends State<SearchMovieList> {
   String? selectedType;
   String? selectedYear;
 
-  final List<String> types = ['movie', 'series', 'episode'];
+  final List<String> types = ['Movie', 'Series', 'Episode'];
   final List<String> years = List.generate(50, (index) => (DateTime.now().year - index).toString());
 
   void updateSearchResults() {

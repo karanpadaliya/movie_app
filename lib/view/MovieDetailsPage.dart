@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:movie_app/controller/FavoritesProvider.dart';
 import 'package:movie_app/model/movieDetailsModel.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 class MovieDetailsPage extends StatefulWidget {
   final MovieDetailsModel movieDetails;
@@ -36,14 +41,40 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
     }
   }
 
+  void shareMovieDetails() async {
+    final movieDetails = widget.movieDetails;
+
+    final String movieInfo = '''
+    *${movieDetails.title ?? "Title"}* (${movieDetails.year ?? "Year"})
+    **Genre:** ${movieDetails.genre ?? "N/A"}
+    **Director:** ${movieDetails.director ?? "N/A"}
+    **Actors:** ${movieDetails.actors ?? "N/A"}
+    **Plot:** ${movieDetails.plot ?? "N/A"}
+    **IMDb Rating:** ${movieDetails.imdbRating ?? "N/A"}
+
+    Shared via Movie App
+    ''';
+
+    // Load your app logo from assets
+    final ByteData bytes = await rootBundle.load('assets/images/movieAppLogo.png');
+    final Uint8List list = bytes.buffer.asUint8List();
+
+    // Get the temporary directory and save the logo there
+    final tempDir = await getTemporaryDirectory();
+    final file = await File('${tempDir.path}/movieAppLogo.png').create();
+    await file.writeAsBytes(list);
+
+    // Share the movie details along with the app logo
+    await Share.shareXFiles([XFile(file.path)], text: movieInfo, subject: 'Check out this movie!');
+  }
+
   @override
   Widget build(BuildContext context) {
-
     FavoritesProvider favoritesProvider =
-        Provider.of<FavoritesProvider>(context);
+    Provider.of<FavoritesProvider>(context);
 
     bool isAlreadyAddedInFavoritesPage =
-        favoritesProvider.favoriteMovies.contains(widget.movieDetails);
+    favoritesProvider.favoriteMovies.contains(widget.movieDetails);
     if (isAlreadyAddedInFavoritesPage) {
       isFavorite = true;
     }
@@ -69,7 +100,9 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              shareMovieDetails();
+            },
             icon: Icon(Icons.share),
           ),
         ],
@@ -203,11 +236,11 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
               ),
               Center(
                   child: Text(
-                '$movieTitle ',
-                style: TextStyle(
-                  fontSize: 25,
-                ),
-              )),
+                    '$movieTitle ',
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
+                  )),
               Text(
                 'Added to your favorites!!',
                 style: TextStyle(),
@@ -307,7 +340,6 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
     );
   }
 
-
   Widget buildRow(String label, String? value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -362,5 +394,4 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
       throw 'Could not launch $url';
     }
   }
-
 }
