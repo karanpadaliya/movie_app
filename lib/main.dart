@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/controller/FavoritesProvider.dart';
 import 'package:movie_app/controller/HomeProvider.dart';
+import 'package:movie_app/view/FavoritesPage.dart';
+import 'package:movie_app/view/MovieDetailsPage.dart';
 import 'package:movie_app/view/SearchMovieList.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_app/view/HomePage.dart';
@@ -21,7 +24,13 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => HomeProvider(),), // Add your providers here
+        ChangeNotifierProvider(
+          create: (context) => HomeProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => FavoritesProvider(),
+        ),
+        // Add your providers here
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -30,6 +39,8 @@ class _MainPageState extends State<MainPage> {
           "/": (context) => SplashScreen(),
           "HomePage": (context) => HomePage(),
           "SearchMovieList": (context) => SearchMovieList(),
+          // "MovieDetailsPage": (context) => MovieDetailsPage(),
+          "FavoritesPage": (context) => FavoritesPage(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(

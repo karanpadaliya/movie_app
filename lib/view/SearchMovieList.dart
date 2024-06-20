@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:movie_app/controller/ApiHelper.dart';
 import 'package:movie_app/controller/HomeProvider.dart';
+import 'package:movie_app/model/movieDetailsModel.dart';
 import 'package:movie_app/model/searchModel.dart';
-import 'package:movie_app/view/HomePage.dart';
+import 'package:movie_app/view/MovieDetailsPage.dart';
 import 'package:provider/provider.dart';
 
 class SearchMovieList extends StatefulWidget {
@@ -25,9 +26,11 @@ class _SearchMovieListState extends State<SearchMovieList> {
       builder: (context, homeProvider, Widget? child) {
         return Scaffold(
           backgroundColor: Colors.white,
-          appBar: AppBar(),
           body: Column(
             children: [
+              SizedBox(
+                height: 10,
+              ),
               RichText(
                 text: TextSpan(
                   text: '',
@@ -72,57 +75,85 @@ class _SearchMovieListState extends State<SearchMovieList> {
                     } else if (snapshot.hasData && snapshot.data != null) {
                       SearchModel searchMode =
                           searchModelFromJson(snapshot.data!.body);
-                      return ListView.builder(
+                      return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 1,
+                          crossAxisSpacing: 1,
+                        ),
                         itemCount: searchMode.search?.length ?? 0,
                         itemBuilder: (context, index) {
                           var search = searchMode.search![index];
-                          return Container(
-                            margin: EdgeInsets.all(10),
-                            child: Stack(
-                              children: [
-                                Image.network(
-                                  search.poster ?? "",
-                                  fit: BoxFit.cover,
-                                  height: 200,
-                                  width: double.infinity,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Text("No Image");
-                                  },
-                                ),
-                                ClipRRect(
-                                  // Clip it cleanly.
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                        sigmaX: 10, sigmaY: 10),
-                                    child: Container(
-                                      color: Colors.grey.withOpacity(0.1),
-                                      alignment: Alignment.center,
-                                      height: 200,
-                                      child: Image.network(
-                                        search.poster ?? "",
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Text("No Image");
-                                        },
+                          return GestureDetector(
+                            onTap: () async {
+                              try {
+                                MovieDetailsModel movieDetails = await ApiHelper
+                                    .obj
+                                    .getApiMovieDetails(search.imdbId!);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MovieDetailsPage(
+                                        movieDetails: movieDetails),
+                                  ),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text("Failed to load movie details")),
+                                );
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.all(10),
+                              child: Stack(
+                                children: [
+                                  Image.network(
+                                    search.poster ?? "",
+                                    fit: BoxFit.cover,
+                                    height: 200,
+                                    width: double.infinity,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Text("No Image");
+                                    },
+                                  ),
+                                  ClipRRect(
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                          sigmaX: 5, sigmaY: 5),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 200,
+                                        child: Image.network(
+                                          search.poster ?? "",
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Text("No Image");
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Positioned(
-                                  bottom: 10,
-                                  left: 10,
-                                  child: Text(
-                                    search.title ?? "",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      backgroundColor: Colors.black54,
+                                  Positioned(
+                                    bottom: 5,
+                                    left: 5,
+                                    child: Container(
+                                      height: 25,
+                                      decoration:
+                                          BoxDecoration(color: Colors.white),
+                                      child: Text(
+                                        search.title ?? "",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -148,18 +179,14 @@ class _SearchMovieListState extends State<SearchMovieList> {
                   placeholder: "Search",
                   prefix: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      CupertinoIcons.search,
-                    ),
+                    child: Icon(CupertinoIcons.search),
                   ),
                   suffix: IconButton(
                     onPressed: () {
                       searchController.clear();
                       Navigator.pushReplacementNamed(context, "HomePage");
                     },
-                    icon: Icon(
-                      CupertinoIcons.delete_left,
-                    ),
+                    icon: Icon(CupertinoIcons.delete_left),
                   ),
                   onSubmitted: (value) {
                     setState(() {

@@ -29,17 +29,32 @@ class _HomePageState extends State<HomePage> {
           "HomePage",
           style: TextStyle(color: CupertinoColors.white, fontSize: 20),
         ),
-        trailing: IconButton(
-          onPressed: () {
-            Provider.of<HomeProvider>(context, listen: false)
-                .getIsSearch();
-            print(isSearch);
-          },
-          icon: Icon(
-            CupertinoIcons.search,
-            color: CupertinoColors.white,
-            size: 23,
-          ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, "FavoritesPage");
+              },
+              icon: Icon(
+                CupertinoIcons.heart_fill,
+                color: CupertinoColors.white,
+                size: 23,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                Provider.of<HomeProvider>(context, listen: false)
+                    .getIsSearch();
+                print(isSearch);
+              },
+              icon: Icon(
+                CupertinoIcons.search,
+                color: CupertinoColors.white,
+                size: 23,
+              ),
+            ),
+          ],
         ),
       ),
       child: Consumer<HomeProvider>(
